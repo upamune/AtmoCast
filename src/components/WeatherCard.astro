@@ -5,7 +5,7 @@ import { SlackIcon } from './icons/SlackIcon';
 interface Props {
   location: string;
   summary: string;
-  timestamp: Date;
+  timestamp: string;
 }
 
 const { location, summary, timestamp } = Astro.props;
@@ -39,7 +39,7 @@ const cleanLocation = location.replace(/-shi$/i, '');
   <p class="mt-4 text-slate-600 whitespace-pre-line">{summary}</p>
   
   <div class="mt-4 text-sm text-slate-500">
-    更新: {timestamp.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
+    更新: {new Date(timestamp).toLocaleString('ja-JP')}
   </div>
 </div>
 

@@ -19,6 +19,5 @@ export async function fetchAPI<T>(url: string): Promise<T> {
       url
     );
   }
-  
   return response.json();
 }

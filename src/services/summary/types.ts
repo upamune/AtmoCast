@@ -8,7 +8,7 @@ export interface SummaryConfig {
 export interface WeatherSummary {
   location: string;
   summary: string;
-  timestamp: Date;
+  timestamp: string;
 }
 
 export interface SummaryService {

@@ -14,19 +14,37 @@ export class GeminiSummaryService implements SummaryService {
     const model = genAI.getGenerativeModel({ model: this.config.model });
 
     const prompt = `
-      あなたは天気予報士です。以下の天気情報を元に、下のフォーマットに従って日本語でまとめてください。フォーマットは必ず使用してください。 {{}} の中には天気情報を元に適切な値を入れてください。
+    以下の天気情報からを日本語で下のフォーマットに従って、にまとめてください。具体的な風速値は必要ありません。最大で300文字程度にしてください。：
+    ---
+    天気情報
+    場所: ${weatherData.location}
 
-      --- 天気情報 ---
-      場所: ${weatherData.location}
-      気温: ${weatherData.temperature}°C
-      天候: ${weatherData.condition}
-      湿度: ${weatherData.humidity}%
-      風速: ${weatherData.windSpeed}km/h
+    朝の天気:
+    気温: ${weatherData.morning.temperature}°C
+    天候: ${weatherData.morning.condition}
+    湿度: ${weatherData.morning.humidity}%
+    風速: ${weatherData.morning.windSpeed}km/h
 
-      --- フォーマット ---
-      今日は{{今日の気温のサマリ}}「{{天気情報を元にどういう天気の日か}}」です。服は{{天気情報を元におすすめの服装を2~3個}}}。{{洗濯日和かどうか}}
-      {{天気で気をつけるべきことがあれば注意事項}}
-    `;
+    昼の天気:
+    気温: ${weatherData.afternoon.temperature}°C
+    天候: ${weatherData.afternoon.condition}
+    湿度: ${weatherData.afternoon.humidity}%
+    風速: ${weatherData.afternoon.windSpeed}km/h
+
+    夜の天気:
+    気温: ${weatherData.evening.temperature}°C
+    天候: ${weatherData.evening.condition}
+    湿度: ${weatherData.evening.humidity}%
+    風速: ${weatherData.evening.windSpeed}km/h
+    ---
+    フォーマット
+    今日は「{天気情報からどういう日なのか}日」です。
+    朝は{朝の天気の特徴}で、昼は{昼の天気の特徴}、夜は{夜の天気の特徴}となります。
+    服装は{朝・昼・夜の気温差を考慮した具体的な服装アドバイス}。
+    {洗濯のタイミングについてのアドバイス}。
+    {傘が必要かどうかのアドバイス}。
+  `;
+
 
     try {
       const result = await model.generateContent(prompt);
@@ -36,14 +54,14 @@ export class GeminiSummaryService implements SummaryService {
       return {
         location: weatherData.location,
         summary,
-        timestamp: weatherData.timestamp
+        timestamp: new Date(weatherData.timestamp).toISOString()
       };
     } catch (error) {
       console.error('Error generating summary:', error);
       return {
         location: weatherData.location,
-        summary: `${weatherData.location}の天気: ${weatherData.condition}、気温${weatherData.temperature}°C`,
-        timestamp: weatherData.timestamp
+        summary: `${weatherData.location}の天気: ${weatherData.morning.condition}、気温${weatherData.morning.temperature}°C`,
+        timestamp: new Date(weatherData.timestamp).toISOString()
       };
     }
   }
