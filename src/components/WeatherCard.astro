@@ -1,0 +1,33 @@
+---
+import { RssIcon } from './icons/RssIcon';
+
+interface Props {
+  location: string;
+  summary: string;
+  timestamp: Date;
+}
+
+const { location, summary, timestamp } = Astro.props;
+const cleanLocation = location.replace(/-shi$/i, '');
+---
+
+<div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+  <div class="flex justify-between items-start">
+    <h2 class="text-xl font-semibold text-slate-800">{cleanLocation}</h2>
+    <a
+      href={`/tenki/${cleanLocation.toLowerCase()}.xml`}
+      class="text-slate-600 hover:text-slate-800 transition-colors"
+      title="RSS Feed"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <RssIcon className="w-5 h-5" />
+    </a>
+  </div>
+  
+  <p class="mt-4 text-slate-600 whitespace-pre-line">{summary}</p>
+  
+  <div class="mt-4 text-sm text-slate-500">
+    更新: {timestamp.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
+  </div>
+</div>
