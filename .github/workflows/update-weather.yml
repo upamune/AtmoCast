@@ -8,8 +8,6 @@ on:
 jobs:
   update-weather:
     runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Tokyo  # Set timezone to JST for all job steps
 
     steps:
       - uses: actions/checkout@v4

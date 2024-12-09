@@ -39,7 +39,7 @@ const cleanLocation = location.replace(/-shi$/i, '');
   <p class="mt-4 text-slate-600 whitespace-pre-line">{summary}</p>
   
   <div class="mt-4 text-sm text-slate-500">
-    更新: {new Date(timestamp).toLocaleString('ja-JP')}
+    更新: {new Date(timestamp).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
   </div>
 </div>
 
