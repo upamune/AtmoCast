@@ -1,5 +1,6 @@
 ---
 import { RssIcon } from './icons/RssIcon';
+import { SlackIcon } from './icons/SlackIcon';
 
 interface Props {
   location: string;
@@ -14,15 +15,25 @@ const cleanLocation = location.replace(/-shi$/i, '');
 <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
   <div class="flex justify-between items-start">
     <h2 class="text-xl font-semibold text-slate-800">{cleanLocation}</h2>
-    <a
-      href={`/tenki/${cleanLocation.toLowerCase()}.xml`}
-      class="text-slate-600 hover:text-slate-800 transition-colors"
-      title="RSS Feed"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <RssIcon className="w-5 h-5" />
-    </a>
+    <div class="flex gap-2">
+      <button
+        class="text-slate-600 hover:text-slate-800 transition-colors"
+        title="Slackに追加"
+        onclick="showSlackModal(this.dataset.command)"
+        data-command={`/feed subscribe https://tenki.serizawa.dev/tenki/${cleanLocation.toLowerCase()}.xml`}
+      >
+        <SlackIcon className="w-5 h-5" />
+      </button>
+      <a
+        href={`/tenki/${cleanLocation.toLowerCase()}.xml`}
+        class="text-slate-600 hover:text-slate-800 transition-colors"
+        title="RSS Feed"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <RssIcon className="w-5 h-5" />
+      </a>
+    </div>
   </div>
   
   <p class="mt-4 text-slate-600 whitespace-pre-line">{summary}</p>
@@ -31,3 +42,57 @@ const cleanLocation = location.replace(/-shi$/i, '');
     更新: {timestamp.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' })}
   </div>
 </div>
+
+<!-- モーダル -->
+<div id="slackModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+  <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+    <h3 class="text-lg font-semibold mb-4">Slackフィードの購読</h3>
+    <p class="mb-4">以下のコマンドをSlackで実行してください：</p>
+    <div class="bg-slate-100 p-3 rounded-md mb-4">
+      <code id="slackCommand" class="text-sm break-all"></code>
+    </div>
+    <div class="flex justify-end gap-4">
+      <button
+        onclick="copyCommand()"
+        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        コピー
+      </button>
+      <button
+        onclick="closeModal()"
+        class="px-4 py-2 bg-slate-200 rounded hover:bg-slate-300 transition-colors"
+      >
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:global>
+  function showSlackModal(command) {
+    const modal = document.getElementById('slackModal');
+    const commandEl = document.getElementById('slackCommand');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    commandEl.textContent = command;
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('slackModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function copyCommand() {
+    const command = document.getElementById('slackCommand').textContent;
+    navigator.clipboard.writeText(command);
+    // オプション: コピー成功を示すフィードバックを表示
+  }
+
+  // モーダルの外側をクリックして閉じる
+  document.getElementById('slackModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  });
+</script>

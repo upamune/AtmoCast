@@ -11,7 +11,7 @@ export function generateRSSFeed(weatherSummary: WeatherSummary): string {
     link: `https://tenki.serizawa.dev/tenki/${cleanLocation.toLowerCase()}`,
     language: 'ja',
     updated: weatherSummary.timestamp,
-    copyright: '© 2024 Tenki'
+    copyright: '© 2024 AtomCast'
   });
 
   feed.addItem({
