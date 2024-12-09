@@ -46,3 +46,11 @@ jobs:
             git add data/
             git commit -m "Update weather information" || exit 0
             git push
+
+      - name: Trigger Cloudflare Pages deployment
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          command: |
+            curl -X POST "${{ secrets.CLOUDFLARE_PAGES_WEBHOOK }}"
