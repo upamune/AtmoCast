@@ -20,7 +20,7 @@
 
 1. リポジトリのクローン:
 ```bash
-git clone https://github.com/yourusername/atmocast.git
+git clone https://github.com/upamune/atmocast.git
 cd atmocast
 ```
 
