@@ -14,7 +14,7 @@ export class GeminiSummaryService implements SummaryService {
     const model = genAI.getGenerativeModel({ model: this.config.model });
 
     const prompt = `
-    以下の天気情報からを日本語で下のフォーマットに従って、にまとめてください。具体的な風速値は必要ありません。最大で300文字程度にしてください。：
+    以下の天気情報からを日本語で下のフォーマットに従って、にまとめてください。具体的な風速値は必要ありませんが、朝昼晩の気温がそれぞれ何度であるかは必要です。最大で300文字程度にしてください。：
     ---
     天気情報
     場所: ${weatherData.location}
