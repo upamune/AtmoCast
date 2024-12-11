@@ -13,8 +13,7 @@ export class GeminiSummaryService implements SummaryService {
     const genAI = new GoogleGenerativeAI(this.config.key);
     const model = genAI.getGenerativeModel({ model: this.config.model });
 
-    const prompt = `
-    以下の天気情報から日本語で下のフォーマットに従ってまとめてください。具体的な風速値は必要ありませんが、朝昼晩の気温がそれぞれ何度であるかは必要です。最大で300文字程度にしてください。：
+    const prompt = `以下の天気情報から日本語で下のフォーマットに従ってまとめてください。具体的な風速値は必要ありませんが、朝昼晩の気温がそれぞれ何度であるかは必要です。最大で300文字程度にしてください。：
     ---
     天気情報
     場所: ${weatherData.location}
@@ -38,7 +37,7 @@ export class GeminiSummaryService implements SummaryService {
     風速: ${weatherData.evening.windSpeed}km/h
     ---
     フォーマット
-    今日は「{天気情報からどういう日なのか}日」です。
+    今日は朝{朝の気温}昼{昼の気温}夜{夜の気温}と「{朝昼晩の天気情報からどういう天気の日なのかを分かりやすく}日」です。
     朝は{朝の天気の特徴}で、昼は{昼の天気の特徴}、夜は{夜の天気の特徴}となります。
     {朝・昼・夜のそれぞれの気温を考慮した具体的な服装アドバイス}。
     {洗濯のタイミングについてのアドバイス}。
@@ -54,14 +53,16 @@ export class GeminiSummaryService implements SummaryService {
       return {
         location: weatherData.location,
         summary,
-        timestamp: new Date(weatherData.timestamp).toISOString()
+        timestamp: new Date(weatherData.timestamp).toISOString(),
+        prompt,
       };
     } catch (error) {
       console.error('Error generating summary:', error);
       return {
         location: weatherData.location,
         summary: `${weatherData.location}の天気: ${weatherData.morning.condition}、気温${weatherData.morning.temperature}°C`,
-        timestamp: new Date(weatherData.timestamp).toISOString()
+        timestamp: new Date(weatherData.timestamp).toISOString(),
+        prompt,
       };
     }
   }

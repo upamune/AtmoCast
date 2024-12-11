@@ -39,22 +39,22 @@ async function updateWeatherData() {
   try {
     const dataDir = path.join(__dirname, '..', 'data');
     await fs.mkdir(dataDir, { recursive: true });
-    
+
     const history = await loadWeatherHistory();
     const today = format(new Date(), 'yyyy-MM-dd');
-    
+
     history[today] = history[today] || {};
-    
+
     for (const location of LOCATIONS) {
       console.log(`Fetching weather data for ${location}...`);
       const weatherData = await weatherService.getWeatherData(location);
-      
+
       console.log(`Generating summary for ${location}...`);
       const weatherSummary = await summaryService.generateSummary(weatherData);
-      
+
       history[today][location] = weatherSummary;
     }
-    
+
     const historyPath = path.join(dataDir, 'weather-history.json');
     await fs.writeFile(
       historyPath,

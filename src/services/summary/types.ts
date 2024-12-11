@@ -9,6 +9,7 @@ export interface WeatherSummary {
   location: string;
   summary: string;
   timestamp: string;
+  prompt: string;
 }
 
 export interface SummaryService {
