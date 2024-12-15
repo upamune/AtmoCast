@@ -16,26 +16,26 @@ export class WeatherService {
     const hourlyData = data.forecast.forecastday[0].hour;
     // console.log(JSON.stringify(hourlyData, null, 2));
     
-    // 朝（8時）、昼（13時）、夜（19時）のデータを取得
+    // 朝（6時）、昼（12時）、夜（21時）のデータを取得
     const morning: TimeBasedWeatherData = {
-      temperature: hourlyData[8].temp_c,
-      condition: hourlyData[8].condition.text,
-      humidity: hourlyData[8].humidity,
-      windSpeed: hourlyData[8].wind_kph
+      temperature: hourlyData[6].temp_c,
+      condition: hourlyData[6].condition.text,
+      humidity: hourlyData[6].humidity,
+      windSpeed: hourlyData[6].wind_kph
     };
 
     const afternoon: TimeBasedWeatherData = {
-      temperature: hourlyData[13].temp_c,
-      condition: hourlyData[13].condition.text,
-      humidity: hourlyData[13].humidity,
-      windSpeed: hourlyData[13].wind_kph
+      temperature: hourlyData[12].temp_c,
+      condition: hourlyData[12].condition.text,
+      humidity: hourlyData[12].humidity,
+      windSpeed: hourlyData[12].wind_kph
     };
 
     const evening: TimeBasedWeatherData = {
-      temperature: hourlyData[19].temp_c,
-      condition: hourlyData[19].condition.text,
-      humidity: hourlyData[19].humidity,
-      windSpeed: hourlyData[19].wind_kph
+      temperature: hourlyData[21].temp_c,
+      condition: hourlyData[21].condition.text,
+      humidity: hourlyData[21].humidity,
+      windSpeed: hourlyData[21].wind_kph
     };
 
     return {
