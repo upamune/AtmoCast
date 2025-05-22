@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import {GoogleGenAI} from '@google/genai';
 import type { WeatherData } from '../weather/types';
 import type { SummaryConfig, WeatherSummary, SummaryService } from './types';
 
@@ -10,8 +10,7 @@ export class GeminiSummaryService implements SummaryService {
   }
 
   async generateSummary(weatherData: WeatherData): Promise<WeatherSummary> {
-    const genAI = new GoogleGenerativeAI(this.config.key);
-    const model = genAI.getGenerativeModel({ model: this.config.model });
+    const genAI = new GoogleGenAI({apiKey: this.config.key});
 
     const prompt = `以下の天気情報から日本語で下のフォーマットに従ってまとめてください。具体的な風速値は必要ありませんが、朝昼晩の気温がそれぞれ何度であるかは必要です。気温は℃で表記してください。最大で300文字程度にしてください。：
     ---
@@ -46,9 +45,11 @@ export class GeminiSummaryService implements SummaryService {
 
 
     try {
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const summary = response.text();
+      const result = await genAI.models.generateContent({ 
+        model: this.config.model,
+        contents: prompt,
+      });
+      const summary = result.text ?? "";
       
       return {
         location: weatherData.location,
