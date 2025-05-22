@@ -11,32 +11,48 @@ export class WeatherService {
   async getWeatherData(location: string): Promise<WeatherData> {
     const cleanLocation = location.replace(/-shi$/i, '');
     const url = `${this.config.baseUrl}/forecast.json?key=${this.config.key}&q=${location}&days=1`;
-    
+
     const data = await fetchAPI<WeatherAPIResponse>(url);
-    const hourlyData = data.forecast.forecastday[0].hour;
-    // console.log(JSON.stringify(hourlyData, null, 2));
-    
-    // 朝（6時）、昼（12時）、夜（21時）のデータを取得
-    const morning: TimeBasedWeatherData = {
-      temperature: hourlyData[6].temp_c,
-      condition: hourlyData[6].condition.text,
-      humidity: hourlyData[6].humidity,
-      windSpeed: hourlyData[6].wind_kph
+
+    // forecastdayが存在し、要素が含まれていることを確認
+    if (!data.forecast?.forecastday || data.forecast.forecastday.length === 0) {
+      throw new Error(`No forecast data available for ${location}`);
+    }
+
+    const forecastDay = data.forecast.forecastday[0];
+
+    // hourプロパティが存在することを確認
+    if (!forecastDay.hour || forecastDay.hour.length === 0) {
+      throw new Error(`No hourly forecast data available for ${location}`);
+    }
+
+    const hourlyData = forecastDay.hour;
+
+    // 特定の時間のデータを安全に取得するヘルパー関数
+    const getTimeBasedData = (index: number): TimeBasedWeatherData => {
+      if (hourlyData.length > index) {
+        return {
+          temperature: hourlyData[index].temp_c,
+          condition: hourlyData[index].condition.text,
+          humidity: hourlyData[index].humidity,
+          windSpeed: hourlyData[index].wind_kph
+        };
+      } else {
+        // 利用可能な最後のデータを使用
+        const lastIndex = hourlyData.length - 1;
+        return {
+          temperature: hourlyData[lastIndex].temp_c,
+          condition: hourlyData[lastIndex].condition.text,
+          humidity: hourlyData[lastIndex].humidity,
+          windSpeed: hourlyData[lastIndex].wind_kph
+        };
+      }
     };
 
-    const afternoon: TimeBasedWeatherData = {
-      temperature: hourlyData[12].temp_c,
-      condition: hourlyData[12].condition.text,
-      humidity: hourlyData[12].humidity,
-      windSpeed: hourlyData[12].wind_kph
-    };
-
-    const evening: TimeBasedWeatherData = {
-      temperature: hourlyData[21].temp_c,
-      condition: hourlyData[21].condition.text,
-      humidity: hourlyData[21].humidity,
-      windSpeed: hourlyData[21].wind_kph
-    };
+    // 朝（8時）、昼（13時）、夜（19時）のデータを取得
+    const morning = getTimeBasedData(8);
+    const afternoon = getTimeBasedData(13);
+    const evening = getTimeBasedData(19);
 
     return {
       location: cleanLocation,
