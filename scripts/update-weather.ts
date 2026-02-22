@@ -22,7 +22,7 @@ const weatherService = new WeatherService({
 
 const summaryService = new GeminiSummaryService({
   key: process.env.GEMINI_API_KEY,
-  model: 'gemini-2.0-flash'
+  model: 'gemini-3-flash-preview'
 });
 
 async function loadWeatherHistory(): Promise<WeatherHistory> {
